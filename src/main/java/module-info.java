@@ -12,4 +12,10 @@ module com.archasmiel.test {
 
     opens com.archasmiel.test to javafx.fxml;
     exports com.archasmiel.test;
+    exports com.archasmiel.test.lib;
+    opens com.archasmiel.test.lib to javafx.fxml;
+    exports com.archasmiel.test.lib.events;
+    opens com.archasmiel.test.lib.events to javafx.fxml;
+    exports com.archasmiel.test.lib.elements;
+    opens com.archasmiel.test.lib.elements to javafx.fxml;
 }

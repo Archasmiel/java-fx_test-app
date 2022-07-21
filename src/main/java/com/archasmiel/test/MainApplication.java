@@ -1,59 +1,57 @@
 package com.archasmiel.test;
 
+import com.archasmiel.test.lib.events.ComponentMouseDrag;
+import com.archasmiel.test.lib.elements.Resistor;
+import com.archasmiel.test.lib.events.ComponentMouseDragEnter;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainApplication extends Application implements EventHandler<ActionEvent> {
 
-    List<Button> buttons = new ArrayList<>();
+    private final List<Node> components = new ArrayList<>();
+    private final Stage mainStage = new Stage();
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
-        stage.setTitle("MainApplication");
+    public void start(Stage stage) {
+        mainStage.setTitle("MainApplication");
+        mainStage.setScene(formScene());
+        mainStage.show();
 
+        System.out.println("main window x&y: " + mainStage.getX() + " " + mainStage.getY());
+    }
+
+    private Scene formScene() {
+        components.clear();
         Group layout = new Group();
-
-        for (int i = 0 ; i < 5 ; i++) {
-            Button button = new Button();
-            button.setText("Button " + (i + 1));
-            button.setTranslateY(50*i);
-
-            button.setOnAction(this);
-
-            layout.getChildren().add(button);
-            buttons.add(button);
-        }
-
-
-
         Scene scene = new Scene(layout, 300, 400);
-        stage.setScene(scene);
-        stage.show();
+
+
+        Resistor res = new Resistor(50, 15, 50, 50, 3, Color.BLACK, 0.7f);
+        res.formComponent();
+        res.elements.forEach(element -> {
+            element.setOnMouseDragged(new ComponentMouseDrag(res));
+        });
+        components.addAll(res.elements);
+
+        layout.getChildren().addAll(components);
+        return scene;
     }
 
     @Override
     public void handle(ActionEvent actionEvent) {
-        buttons.forEach(button -> {
-            if (button != actionEvent.getSource()) {
-                button.setText("Button changed");
-                button.setScaleX(Math.random() * 2);
-                button.setScaleY(Math.random() * 2);
-            }
-        });
+
     }
 }
